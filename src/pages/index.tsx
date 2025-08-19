@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import Home from "../components/Home";
+import Home from "@components/Home";
 import Head from "next/head";
 
 export default function IndexPage() {
