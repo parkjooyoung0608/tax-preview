@@ -21,9 +21,23 @@ interface ITaxResultProps {
   최종기납부세액: number | string;
 }
 
+interface IComputedDeductionDisplay {
+  title: string;
+  공제금액: number;
+  공제한도?: number;
+  url?: string;
+  tooltipContent?: string;
+}
+
+interface IComputedDeductionForm extends IComputedDeductionDisplay {
+  children: React.ReactNode;
+}
+
 export type {
   ICategoryProps,
   IResultProps,
   ITaxDeductionProgressProps,
   ITaxResultProps,
+  IComputedDeductionDisplay,
+  IComputedDeductionForm,
 };
