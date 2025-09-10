@@ -4,4 +4,10 @@ interface ICategoryProps {
   center?: boolean;
 }
 
-export type { ICategoryProps };
+interface IResultProps {
+  amount: number | string;
+  message: string;
+  color?: "text-brand-red" | "text-brand-blue";
+}
+
+export type { ICategoryProps, IResultProps };
