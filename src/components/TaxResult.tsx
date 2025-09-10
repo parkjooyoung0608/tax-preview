@@ -24,7 +24,7 @@ export default function TaxResult({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 mt-4 ">
+    <section className="grid md:grid-cols-1 gap-6">
       <div className="bg-white w-full py-4 rounded-2xl border border-gray-300 dark:border-gray-700 text-center content-center">
         <Category
           title="차감징수액"
@@ -117,6 +117,6 @@ export default function TaxResult({
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
