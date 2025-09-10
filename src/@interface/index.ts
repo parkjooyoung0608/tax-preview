@@ -21,6 +21,14 @@ interface ITaxResultProps {
   최종기납부세액: number | string;
 }
 
+interface IInputNumberProps {
+  label: string;
+  value?: number;
+  placeholder: string;
+  onChange: (v: number | undefined) => void;
+  hint?: string;
+}
+
 interface IComputedDeductionDisplay {
   title: string;
   공제금액: number;
@@ -38,6 +46,7 @@ export type {
   IResultProps,
   ITaxDeductionProgressProps,
   ITaxResultProps,
+  IInputNumberProps,
   IComputedDeductionDisplay,
   IComputedDeductionForm,
 };
