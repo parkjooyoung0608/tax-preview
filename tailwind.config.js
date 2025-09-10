@@ -7,6 +7,10 @@ module.exports = {
         sans: ["var(--font-geist-sans)", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
       },
+      colors: {
+        "brand-red": "#E64242",
+        "brand-blue": "#4F7FD1",
+      },
     },
   },
   plugins: [],
