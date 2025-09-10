@@ -10,4 +10,10 @@ interface IResultProps {
   color?: "text-brand-red" | "text-brand-blue";
 }
 
-export type { ICategoryProps, IResultProps };
+interface ITaxResultProps {
+  차감징수액: number;
+  최종결정세액: number;
+  최종기납부세액: number | string;
+}
+
+export type { ICategoryProps, IResultProps, ITaxResultProps };
