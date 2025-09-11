@@ -33,6 +33,7 @@ import 월세세액공제 from "@utils/세액공제/월세";
 import 고향사랑기부금세액공제 from "@utils/세액공제/고향사랑기부금";
 import 정치기부금 from "@utils/세액공제/정치기부금";
 import 지정기부금세액공제 from "@utils/세액공제/지정기부금";
+import 출산입양공제 from "@utils/세액공제/출산입양";
 import 자녀세액공제 from "@utils/세액공제/자녀";
 import formatKoreanCurrency from "@utils/formatKoreanCurrency";
 import useSalaryDetail from "@hooks/useSalaryDetail";
@@ -68,6 +69,7 @@ export default function Calculator() {
   const [교육비, set교육비] = useState<T교육비>(초기교육비);
   const [연간월세, set연간월세] = useState<number | undefined>(undefined);
   const [기부금, set기부금] = useState<T기부금>(초기기부금);
+  const [출산입양, set출산입양] = useState<number | undefined>(undefined);
   const [자녀, set자녀] = useState<number | undefined>(undefined);
   // 급여관련
   const { 급여세부내역, set급여세부내역, handle급여세부내역 } =
@@ -125,6 +127,7 @@ export default function Calculator() {
   const 최종월세액공제 = 월세세액공제(연간월세 || 0, 총급여, 0);
   const 최종고향사랑기부공제 = 고향사랑기부금세액공제(기부금.고향사랑 || 0);
   const 최종정치기부공제 = 정치기부금(기부금.정치 || 0);
+  const 최종출산입양세액공제 = 출산입양공제(출산입양 || 0);
   const 최종자녀세액공제 = 자녀세액공제(자녀 || 0);
   const 최종세액공제 =
     최종근로소득세액공제 +
@@ -135,6 +138,7 @@ export default function Calculator() {
     최종월세액공제 +
     최종고향사랑기부공제 +
     최종정치기부공제 +
+    최종출산입양세액공제 +
     최종자녀세액공제 +
     (결혼 ? 500_000 : 0);
 
@@ -780,6 +784,20 @@ export default function Calculator() {
                         정치: value,
                       }))
                     }
+                  />
+                </ComputedDeductionForm>
+
+                {/* 출산/입양 세액공제 */}
+                <ComputedDeductionForm
+                  title="출산/입양 세액공제"
+                  공제금액={최종출산입양세액공제}
+                  tooltipContent={`해당 과세기간에 출산하거나 입양 신고한 공제대상 자녀가 있는 경우을 말합니다.`}
+                >
+                  <InputNumber
+                    label=""
+                    placeholder="출산하거나 입양 신고한 자녀의 수를 작성합니다."
+                    value={출산입양}
+                    onChange={(v) => set출산입양(v)}
                   />
                 </ComputedDeductionForm>
 
