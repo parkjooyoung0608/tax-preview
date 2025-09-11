@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 // components
 import Card from "@components/ui/Card";
@@ -150,14 +150,6 @@ export default function Calculator() {
   const clamp = (v: number, min: number, max: number) =>
     Math.min(max, Math.max(min, v));
 
-  // 리셋(세션 제거 + 기본값)
-  const resetSalaryDetail = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("급여세부내역");
-      set급여세부내역(초기급여세부내역);
-    }
-  };
-
   // 자동 제안 버튼
   const autofillIns = () => {
     const { 국민연금, 고용보험 } = 사대보험자동계산(총급여);
@@ -166,6 +158,120 @@ export default function Calculator() {
       국민연금,
       고용보험,
     }));
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadState = <T,>(
+      key: string,
+      setter: Dispatch<SetStateAction<T>>
+    ) => {
+      const item = localStorage.getItem(key);
+      if (
+        item === null ||
+        item === "undefined" ||
+        item === "null" ||
+        item === ""
+      ) {
+        return;
+      }
+
+      try {
+        setter(JSON.parse(item) as T);
+      } catch (e) {
+        console.error(`${key} 값 파싱 실패:`, e, item);
+      }
+    };
+
+    loadState("카드", set카드);
+    loadState("부양가족수", set부양가족수);
+    loadState("주택청약", set주택청약);
+    loadState("중소기업감면적용", set중소기업감면적용);
+    loadState("결혼", set결혼);
+    loadState("연금저축", set연금저축);
+    loadState("irpDc", setIrpDc);
+    loadState("보험료", set보험료);
+    loadState("의료비", set의료비);
+    loadState("교육비", set교육비);
+    loadState("연간월세", set연간월세);
+    loadState("기부금", set기부금);
+    loadState("출산입양", set출산입양);
+    loadState("자녀", set자녀);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // 모든 상태를 localStorage에 저장
+    localStorage.setItem("카드", JSON.stringify(카드));
+    localStorage.setItem("부양가족수", JSON.stringify(부양가족수));
+    localStorage.setItem("주택청약", JSON.stringify(주택청약));
+    localStorage.setItem("중소기업감면적용", JSON.stringify(중소기업감면적용));
+    localStorage.setItem("결혼", JSON.stringify(결혼));
+    localStorage.setItem("연금저축", JSON.stringify(연금저축));
+    localStorage.setItem("irpDc", JSON.stringify(irpDc));
+    localStorage.setItem("보험료", JSON.stringify(보험료));
+    localStorage.setItem("의료비", JSON.stringify(의료비));
+    localStorage.setItem("교육비", JSON.stringify(교육비));
+    localStorage.setItem("연간월세", JSON.stringify(연간월세));
+    localStorage.setItem("기부금", JSON.stringify(기부금));
+    localStorage.setItem("출산입양", JSON.stringify(출산입양));
+    localStorage.setItem("자녀", JSON.stringify(자녀));
+  }, [
+    카드,
+    부양가족수,
+    주택청약,
+    중소기업감면적용,
+    결혼,
+    연금저축,
+    irpDc,
+    보험료,
+    의료비,
+    교육비,
+    연간월세,
+    기부금,
+    출산입양,
+    자녀,
+  ]);
+
+  const resetSalaryDetail = () => {
+    if (typeof window !== "undefined") {
+      const keys = [
+        "급여세부내역",
+        "카드",
+        "부양가족수",
+        "주택청약",
+        "중소기업감면적용",
+        "결혼",
+        "연금저축",
+        "irpDc",
+        "보험료",
+        "의료비",
+        "교육비",
+        "연간월세",
+        "기부금",
+        "출산입양",
+        "자녀",
+      ];
+      keys.forEach((key) => localStorage.removeItem(key));
+
+      set급여세부내역(초기급여세부내역);
+      set카드(초기카드);
+      set부양가족수(1);
+      set주택청약(undefined);
+      set중소기업감면적용(false);
+      set결혼(false);
+      set연금저축(undefined);
+      setIrpDc(undefined);
+      set보험료(초기보험료);
+      set의료비(초기의료비);
+      set교육비(초기교육비);
+      set연간월세(undefined);
+      set기부금(초기기부금);
+      set출산입양(undefined);
+      set자녀(undefined);
+    }
   };
 
   // TODO: SEO를 위해 정적 메타 태그/OG 태그를 페이지별 설정하시고(Next.js권장), 광고는 카카오 애드핏 정책에 맞게 삽입하세요.
