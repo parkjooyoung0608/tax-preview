@@ -60,6 +60,7 @@ export default function Calculator() {
   const [주택청약, set주택청약] = useState<number | undefined>(undefined);
   // 세액공제
   const [중소기업감면적용, set중소기업감면적용] = useState(false);
+  const [결혼, set결혼] = useState(false);
   const [연금저축, set연금저축] = useState<number | undefined>(undefined);
   const [irpDc, setIrpDc] = useState<number | undefined>(undefined);
   const [보험료, set보험료] = useState<T보장성보험>(초기보험료);
@@ -134,7 +135,8 @@ export default function Calculator() {
     최종월세액공제 +
     최종고향사랑기부공제 +
     최종정치기부공제 +
-    최종자녀세액공제;
+    최종자녀세액공제 +
+    (결혼 ? 500_000 : 0);
 
   const 최종결정세액 = Math.max(0, 최종산출세액 - 최종세액공제);
   const 최종기납부세액 = 기납부세액({
@@ -477,7 +479,22 @@ export default function Calculator() {
                 />
 
                 <Tag title="유동" />
+                {/* 결혼 세액공제 */}
+                <CheckBox
+                  id="결혼세액공제"
+                  checked={결혼}
+                  onChange={(e) => set결혼(e.target.checked)}
+                  amount={500000}
+                  label="이번년도에 결혼을 하셨나요?"
+                  tooltipContent={`[조건]
+- 혼인신고를 한 해에 생애 1회만 적용됩니다
+- 2024년~2026년 사이의 혼인신고만 적용됩니다.
 
+[💡 준비 서류]
+연말정산 시 회사에 제출해야 해요.
+- 혼인관계증명서
+- 주민등록등본 `}
+                />
                 <ComputedDeductionForm
                   title="연금저축 세액공제"
                   공제금액={최종연금저축세액공제}
