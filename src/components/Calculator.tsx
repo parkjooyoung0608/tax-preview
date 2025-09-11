@@ -5,7 +5,7 @@ import Card from "@components/ui/Card";
 import InputNumber from "@components/InputNumber";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
-import Title from "@components/computedDeduction/Title";
+import CheckBox from "@components/CheckBox";
 import Toggle from "@components/Toggle";
 import TaxDeductionProgress from "@components/TaxProgress";
 import ComputedDeductionForm from "@components/computedDeduction/Form";
@@ -46,7 +46,6 @@ import {
   초기카드,
 } from "constants/initialValues";
 import { T보장성보험, T의료비, T교육비, T카드, T기부금 } from "@interface";
-import useLocalStorageSync from "@hooks/useLocalStorageSync";
 
 /**
  * 연말정산 미리보기 — MVP 단일 파일 React 앱
@@ -294,18 +293,13 @@ export default function Calculator() {
                 {/* 고정 공제 전체 카드 */}
                 <div className="flex flex-col gap-4 p-6 border rounded-lg bg-gray-50">
                   {/* 중소기업 취업자 소득세 감면 */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="중소기업감면적용"
-                        checked={중소기업감면적용}
-                        onChange={(e) => set중소기업감면적용(e.target.checked)}
-                      />
-                      <label htmlFor="중소기업감면적용">
-                        <Title
-                          title="중소기업 취업자 소득세 감면 적용"
-                          tooltipContent={`조건:
+                  <CheckBox
+                    id="중소기업감면적용"
+                    checked={중소기업감면적용}
+                    onChange={(e) => set중소기업감면적용(e.target.checked)}
+                    amount={중소기업취업자소득감면(총급여)}
+                    label="중소기업 취업자 소득세 감면 적용"
+                    tooltipContent={`조건:
 - 15세~34세 이하 근로자 (군복무 기간 제외)
 - 감면 기간: 5년
 - 감면율: 90%
@@ -318,16 +312,7 @@ export default function Calculator() {
 참고 링크:
 - https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=40611&cntntsId=239023
 `}
-                        />
-                      </label>
-                    </div>
-
-                    {중소기업감면적용 && (
-                      <span className="font-bold text-blue-600">
-                        {중소기업취업자소득감면(총급여)}원
-                      </span>
-                    )}
-                  </div>
+                  />
                   <Tag title="고정" />
                   {/* 근로 소득 공제 */}
                   <ComputedDeductionDisplay

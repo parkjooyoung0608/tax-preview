@@ -84,6 +84,15 @@ interface IComputedDeductionForm extends IComputedDeductionDisplay {
   children: React.ReactNode;
 }
 
+interface ICheckBoxProps {
+  id: string;
+  checked: boolean;
+  label: string;
+  tooltipContent: string;
+  amount: number;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 export type {
   T급여세부내역,
   T보장성보험,
@@ -98,4 +107,5 @@ export type {
   IInputNumberProps,
   IComputedDeductionDisplay,
   IComputedDeductionForm,
+  ICheckBoxProps,
 };
