@@ -33,6 +33,7 @@ import 월세세액공제 from "@utils/세액공제/월세";
 import 고향사랑기부금세액공제 from "@utils/세액공제/고향사랑기부금";
 import 정치기부금 from "@utils/세액공제/정치기부금";
 import 지정기부금세액공제 from "@utils/세액공제/지정기부금";
+import 자녀세액공제 from "@utils/세액공제/자녀";
 import formatKoreanCurrency from "@utils/formatKoreanCurrency";
 import useSalaryDetail from "@hooks/useSalaryDetail";
 
@@ -66,6 +67,7 @@ export default function Calculator() {
   const [교육비, set교육비] = useState<T교육비>(초기교육비);
   const [연간월세, set연간월세] = useState<number | undefined>(undefined);
   const [기부금, set기부금] = useState<T기부금>(초기기부금);
+  const [자녀, set자녀] = useState<number | undefined>(undefined);
   // 급여관련
   const { 급여세부내역, set급여세부내역, handle급여세부내역 } =
     useSalaryDetail();
@@ -122,6 +124,7 @@ export default function Calculator() {
   const 최종월세액공제 = 월세세액공제(연간월세 || 0, 총급여, 0);
   const 최종고향사랑기부공제 = 고향사랑기부금세액공제(기부금.고향사랑 || 0);
   const 최종정치기부공제 = 정치기부금(기부금.정치 || 0);
+  const 최종자녀세액공제 = 자녀세액공제(자녀 || 0);
   const 최종세액공제 =
     최종근로소득세액공제 +
     최종연금저축세액공제 +
@@ -130,7 +133,9 @@ export default function Calculator() {
     최종교육비세액공제 +
     최종월세액공제 +
     최종고향사랑기부공제 +
-    최종정치기부공제;
+    최종정치기부공제 +
+    최종자녀세액공제;
+
   const 최종결정세액 = Math.max(0, 최종산출세액 - 최종세액공제);
   const 최종기납부세액 = 기납부세액({
     소득세: (급여세부내역.소득세 || 0) + (급여세부내역.지방소득세 || 0),
@@ -454,14 +459,12 @@ export default function Calculator() {
               tooltipContent="내야할 세금을 깍아주는 것을 말해요."
             />
             <Result
-              amount={formatKoreanCurrency(
-                최종근로소득세액공제 + 최종연금저축세액공제
-              )}
+              amount={formatKoreanCurrency(최종세액공제)}
               message="세액공제를 받을 것으로 예상돼요🥳"
             />
             <TaxDeductionProgress
               최대공제한도={25000000}
-              공제금액={최종근로소득세액공제 + 최종연금저축세액공제}
+              공제금액={최종세액공제}
             />
 
             <div className="grid grid-cols-1 gap-4 mt-6">
@@ -474,6 +477,7 @@ export default function Calculator() {
                 />
 
                 <Tag title="유동" />
+
                 <ComputedDeductionForm
                   title="연금저축 세액공제"
                   공제금액={최종연금저축세액공제}
@@ -759,6 +763,20 @@ export default function Calculator() {
                         정치: value,
                       }))
                     }
+                  />
+                </ComputedDeductionForm>
+
+                {/* 자녀 세액공제 */}
+                <ComputedDeductionForm
+                  title="자녀 세액공제 (8세 이상)"
+                  공제금액={최종자녀세액공제}
+                  url="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=6596&cntntsId=7875"
+                >
+                  <InputNumber
+                    label=""
+                    placeholder="8세이상 자녀의 수를 작성합니다."
+                    value={자녀}
+                    onChange={(v) => set자녀(v)}
                   />
                 </ComputedDeductionForm>
               </div>
