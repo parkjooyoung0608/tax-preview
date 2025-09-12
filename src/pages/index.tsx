@@ -3,7 +3,7 @@ import Head from "next/head";
 
 export default function IndexPage() {
   const siteUrl = "https://tax-preview.web.app/";
-  const ogImage = `${siteUrl}/og-image.png?v=2`;
+  const ogImage = `/og-image.png`;
   const twitterImage = `${siteUrl}/twitter-image.png`;
 
   return (
