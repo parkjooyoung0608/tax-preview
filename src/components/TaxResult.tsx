@@ -25,7 +25,7 @@ export default function TaxResult({
 
   return (
     <section className="grid md:grid-cols-1 gap-6">
-      <div className="bg-white w-full py-4 rounded-2xl border border-gray-300 dark:border-gray-700 text-center content-center">
+      <div className="bg-white w-full py-4 rounded-2xl border border-gray-300 text-center content-center">
         <Category
           title="차감징수액"
           tooltipContent="내가 내야 할 세금에서 이미 낸 세금을 뺀 금액이에요. 결과가 +면 더 내야 하고, -면 돌려받아요."

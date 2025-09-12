@@ -40,7 +40,7 @@ export default function InputNumber({
         type="text"
         inputMode="numeric"
         placeholder={placeholder}
-        className="px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+        className="px-3 py-2 rounded-xl border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue-"
         value={formatNumberWithComma(inputValue)}
         onChange={handleChange}
       />

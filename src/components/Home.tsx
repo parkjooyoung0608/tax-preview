@@ -292,12 +292,12 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       <Header onClickReset={resetSalaryDetail} />
 
       {/* 광고 배너(샘플) */}
       <div className="max-w-5xl mx-auto px-4 mt-4">
-        <div className="w-full h-20 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center text-sm text-gray-500">
+        <div className="w-full h-20 rounded-2xl border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-500">
           카카오 애드핏 영역 (실 서비스에서 광고 단위 코드로 교체)
         </div>
       </div>
@@ -929,7 +929,7 @@ export default function HomeScreen() {
         <section>
           <Card>
             <Category title="참고 및 면책" />
-            <ul className="text-sm space-y-2 text-gray-600 dark:text-gray-300">
+            <ul className="text-sm space-y-2 text-gray-600">
               <li>
                 본 도구는 <b>참고용</b>입니다. 실제 연말정산은 국세청 고지 및
                 회사 원천징수 내역을 따릅니다.
