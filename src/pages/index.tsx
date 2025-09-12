@@ -2,7 +2,7 @@ import Home from "@components/Home";
 import Head from "next/head";
 
 export default function IndexPage() {
-  const siteUrl = "https://yourdomain.com"; // 실제 도메인
+  const siteUrl = "https://tax-preview.web.app/"; // 실제 도메인
   const ogImage = `${siteUrl}/og-image.png`; // 1200x630px 권장
   const twitterImage = `${siteUrl}/twitter-image.png`;
 
