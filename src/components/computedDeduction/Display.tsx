@@ -13,7 +13,11 @@ export default function ComputedDeductionDisplay({
   return (
     <div className="flex justify-between items-start mb-4">
       <div>
-        <Title title={title} tooltipContent={tooltipContent} />
+        <Title
+          title={title}
+          tooltipContent={tooltipContent}
+          tooltipPosition="left"
+        />
         {url && <RefLink url={url} />}
       </div>
       <div className="text-right">

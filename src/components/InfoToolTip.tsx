@@ -1,7 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Info } from "lucide-react";
 
-export default function InfoTooltip({ content }: { content: string }) {
+export default function InfoTooltip({
+  content,
+  position,
+}: {
+  content: string;
+  position: "left" | "right";
+}) {
   const [open, setOpen] = useState(false);
   const infoRef = useRef<HTMLDivElement>(null);
 
@@ -30,9 +36,15 @@ export default function InfoTooltip({ content }: { content: string }) {
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 left-0 bg-black text-white text-xs rounded-lg shadow-lg px-3 py-2 whitespace-pre-line break-words w-[400px]">
+        <div
+          className={`absolute z-10 mt-2 bg-black text-white text-xs rounded-lg shadow-lg px-3 py-2 whitespace-pre-line break-words w-[200px] mb:w-[400px]
+            ${position === "left" ? "left-0" : "right-0"}`}
+        >
           {content}
-          <div className="w-2 h-2 bg-black rotate-45 absolute -top-1 left-2"></div>
+          <div
+            className={`w-2 h-2 bg-black rotate-45 absolute -top-1
+              ${position === "left" ? "left-2" : "right-2"}`}
+          />
         </div>
       )}
     </div>

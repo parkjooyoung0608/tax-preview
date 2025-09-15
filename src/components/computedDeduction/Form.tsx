@@ -14,7 +14,11 @@ export default function ComputedDeductionForm({
   return (
     <div className="mb:mb-3 mb-6">
       <div className="mb-2">
-        <Title title={title} tooltipContent={tooltipContent} />
+        <Title
+          title={title}
+          tooltipContent={tooltipContent}
+          tooltipPosition="left"
+        />
         {url && <RefLink url={url} />}
       </div>
       {children}

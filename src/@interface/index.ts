@@ -108,6 +108,12 @@ interface IComputedDeductionResultProps {
   limit?: number;
 }
 
+interface ITitleProps {
+  title: string;
+  tooltipContent?: string;
+  tooltipPosition?: "left" | "right";
+}
+
 export type {
   T급여세부내역,
   T보장성보험,
@@ -125,4 +131,5 @@ export type {
   IComputedDeductionForm,
   ICheckBoxProps,
   IComputedDeductionResultProps,
+  ITitleProps,
 };

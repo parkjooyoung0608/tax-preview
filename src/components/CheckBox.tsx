@@ -15,7 +15,11 @@ export default function CheckBox({
       <div className="flex items-center gap-2">
         <input type="checkbox" id={id} checked={checked} onChange={onChange} />
         <label htmlFor={id}>
-          <Title title={label} tooltipContent={tooltipContent} />
+          <Title
+            title={label}
+            tooltipContent={tooltipContent}
+            tooltipPosition="right"
+          />
         </label>
       </div>
 

@@ -13,7 +13,9 @@ export default function Category({
       }`}
     >
       <h2>{title}</h2>
-      {tooltipContent && <InfoTooltip content={tooltipContent} />}
+      {tooltipContent && (
+        <InfoTooltip content={tooltipContent} position="left" />
+      )}
     </div>
   );
 }
