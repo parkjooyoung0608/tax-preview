@@ -41,6 +41,13 @@ type T기부금 = {
   지정: number | undefined;
 };
 
+interface TComputedDeductionDisplay {
+  title: string;
+  amount: number;
+  limit?: number;
+  url?: string;
+}
+
 interface ICategoryProps {
   title: string;
   tooltipContent?: string;
@@ -100,6 +107,7 @@ export type {
   T교육비,
   T카드,
   T기부금,
+  TComputedDeductionDisplay,
   ICategoryProps,
   IResultProps,
   ITaxDeductionProgressProps,
