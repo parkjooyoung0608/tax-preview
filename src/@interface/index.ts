@@ -100,6 +100,14 @@ interface ICheckBoxProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+interface IComputedDeductionResultProps {
+  title: string;
+  tooltipContent: string;
+  amount: number;
+  message: string;
+  limit?: number;
+}
+
 export type {
   T급여세부내역,
   T보장성보험,
@@ -116,4 +124,5 @@ export type {
   IComputedDeductionDisplay,
   IComputedDeductionForm,
   ICheckBoxProps,
+  IComputedDeductionResultProps,
 };
