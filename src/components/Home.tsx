@@ -2,18 +2,19 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 // components
 import Card from "@components/ui/Card";
+import SubCard from "@components/ui/SubCard";
 import InputNumber from "@components/InputNumber";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import CheckBox from "@components/CheckBox";
 import Toggle from "@components/Toggle";
-import TaxDeductionProgress from "@components/TaxProgress";
 import ComputedDeductionForm from "@components/computedDeduction/Form";
+import ComputedDeductionResult from "@components/computedDeduction/Result";
+import ComputedDeductionFix from "@components/computedDeduction/Fix";
 import TaxResult from "@components/TaxResult";
 import Category from "@components/text/Category";
 import Result from "@components/text/Result";
 import Tag from "@components/Tag";
-import ComputedDeductionDisplay from "@components/computedDeduction/Display";
 import AdFitBannerWrapper from "@components/AdFit/BannerWrapper";
 
 // utils
@@ -36,7 +37,6 @@ import 정치기부금 from "@utils/세액공제/정치기부금";
 import 지정기부금세액공제 from "@utils/세액공제/지정기부금";
 import 출산입양공제 from "@utils/세액공제/출산입양";
 import 자녀세액공제 from "@utils/세액공제/자녀";
-import formatKoreanCurrency from "@utils/formatKoreanCurrency";
 import useSalaryDetail from "@hooks/useSalaryDetail";
 
 // constants & interfaces
@@ -148,6 +148,20 @@ export default function HomeScreen() {
   const 최종기납부세액 = 기납부세액({
     소득세: (급여세부내역.소득세 || 0) + (급여세부내역.지방소득세 || 0),
   });
+
+  const 고정소득공제 = [
+    {
+      title: "근로 소득 공제",
+      amount: 최종근로소득공제,
+      limit: 20000000,
+      url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=6592&cntntsId=7871",
+    },
+    { title: "연금보험료 소득 공제", amount: 최종연금보험공제 },
+  ];
+
+  const 고정세액공제 = [
+    { title: "근로소득 세액공제", amount: 최종근로소득세액공제 },
+  ];
 
   const clamp = (v: number, min: number, max: number) =>
     Math.min(max, Math.max(min, v));
@@ -295,107 +309,111 @@ export default function HomeScreen() {
         <section className="grid md:grid-cols-1 gap-6">
           {/* 급여 입력 필드 */}
           <Card>
-            <Category
-              title="기납부세액"
-              tooltipContent={`원천징수로 월급을 받으면서 미리 떼간 세금을 말해요.
+            <section className="mb-6">
+              <Category
+                title="기납부세액"
+                tooltipContent={`원천징수로 월급을 받으면서 미리 떼간 세금을 말해요.
                 연말 정산 시 최대로 돌려받을 수 있는 금액을 뜻하기도해요!
               💡 아래 내용은 급여명세서에서 확인할 수 있어요.
               `}
-            />
-
-            <Result
-              amount={최종기납부세액}
-              message="은 최대로 돌려받을 수 있는 금액이에요."
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-              <InputNumber
-                label="총급여(연)"
-                placeholder="연간 총 급여액을 입력합니다."
-                value={급여세부내역.연봉}
-                onChange={(value) => handle급여세부내역("연봉", value)}
-                hint="상여금을 포함합니다."
               />
 
-              <InputNumber
-                label="비과세 소득(연)"
-                placeholder="연간 총 비과세 소득을 입력합니다."
-                value={급여세부내역.비과세}
-                onChange={(value) => handle급여세부내역("비과세", value)}
-                hint="식대를 포함합니다."
+              <Result
+                amount={최종기납부세액}
+                message="은 최대로 돌려받을 수 있는 금액이에요."
               />
-            </div>
-            <div>
-              <div className="flex items-center justify-end">
-                <button
-                  onClick={autofillIns}
-                  disabled={!급여세부내역.연봉 || 급여세부내역.연봉 === 0}
-                  className={`px-2 py-1 rounded-lg border text-xs
+            </section>
+            <section>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <InputNumber
+                  label="총급여(연)"
+                  placeholder="연간 총 급여액을 입력합니다."
+                  value={급여세부내역.연봉}
+                  onChange={(value) => handle급여세부내역("연봉", value)}
+                  hint="상여금을 포함합니다."
+                />
+
+                <InputNumber
+                  label="비과세 소득(연)"
+                  placeholder="연간 총 비과세 소득을 입력합니다."
+                  value={급여세부내역.비과세}
+                  onChange={(value) => handle급여세부내역("비과세", value)}
+                  hint="식대를 포함합니다."
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-end">
+                  <button
+                    onClick={autofillIns}
+                    disabled={!급여세부내역.연봉 || 급여세부내역.연봉 === 0}
+                    className={`px-2 py-1 rounded-lg border text-xs
     ${
       !급여세부내역.연봉 || 급여세부내역.연봉 === 0
         ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
         : "border-gray-300 hover:bg-gray-100"
     }`}
-                >
-                  자동 채우기
-                </button>
+                  >
+                    자동 채우기
+                  </button>
+                </div>
+                <div className="grid  grid-cols-1 md:grid-cols-2 gap-3">
+                  {/* 한달 입력하면 자동계산 vs 매달 다르게 입력 가능 */}
+                  <InputNumber
+                    label="국민연금(월)"
+                    placeholder="월 국민연금을 입력합니다."
+                    value={급여세부내역.국민연금}
+                    onChange={(value) => handle급여세부내역("국민연금", value)}
+                  />
+                  <InputNumber
+                    label="고용보험(월)"
+                    placeholder="월 고용보험을 입력합니다."
+                    value={급여세부내역.고용보험}
+                    onChange={(value) => handle급여세부내역("고용보험", value)}
+                  />
+                  <InputNumber
+                    label="소득세(월)"
+                    placeholder="월 소득세를 입력합니다."
+                    value={급여세부내역.소득세}
+                    onChange={(value) => handle급여세부내역("소득세", value)}
+                  />
+                  <InputNumber
+                    label="지방소득세(월)"
+                    placeholder="월 지방소득세를 입력합니다."
+                    value={급여세부내역.지방소득세}
+                    onChange={(value) =>
+                      handle급여세부내역("지방소득세", value)
+                    }
+                  />
+                </div>
               </div>
-              <div className="grid  grid-cols-1 md:grid-cols-2 gap-3">
-                {/* 한달 입력하면 자동계산 vs 매달 다르게 입력 가능 */}
-                <InputNumber
-                  label="국민연금(월)"
-                  placeholder="월 국민연금을 입력합니다."
-                  value={급여세부내역.국민연금}
-                  onChange={(value) => handle급여세부내역("국민연금", value)}
-                />
-                <InputNumber
-                  label="고용보험(월)"
-                  placeholder="월 고용보험을 입력합니다."
-                  value={급여세부내역.고용보험}
-                  onChange={(value) => handle급여세부내역("고용보험", value)}
-                />
-                <InputNumber
-                  label="소득세(월)"
-                  placeholder="월 소득세를 입력합니다."
-                  value={급여세부내역.소득세}
-                  onChange={(value) => handle급여세부내역("소득세", value)}
-                />
-                <InputNumber
-                  label="지방소득세(월)"
-                  placeholder="월 지방소득세를 입력합니다."
-                  value={급여세부내역.지방소득세}
-                  onChange={(value) => handle급여세부내역("지방소득세", value)}
-                />
-              </div>
-            </div>
+            </section>
           </Card>
 
           {/* 소득공제 : 총 공제 금액 합계 계산  */}
           <Card>
-            <Category
+            <ComputedDeductionResult
               title="소득 공제"
               tooltipContent={`소득 공제는 내 소득을 깍아주는 거에요.
                 나의 과세표준(총급여-소득공제)을 계산할 때 사용돼요.`}
-            />
-            <Result
-              amount={formatKoreanCurrency(최종소득공제)}
+              amount={최종소득공제}
               message="소득공제를 받을 것으로 예상돼요🥳"
+              limit={20000000}
             />
-            <TaxDeductionProgress
-              최대공제한도={25000000}
-              공제금액={최종소득공제}
-            />
-            <div className="grid grid-cols-1 gap-4 mt-6">
-              <div className="grid grid-cols-1 gap-4">
-                {/* 고정 공제 전체 카드 */}
-                <div className="flex flex-col gap-4 p-6 border rounded-lg bg-gray-50">
-                  {/* 중소기업 취업자 소득세 감면 */}
-                  <CheckBox
-                    id="중소기업감면적용"
-                    checked={중소기업감면적용}
-                    onChange={(e) => set중소기업감면적용(e.target.checked)}
-                    amount={중소기업취업자소득감면(총급여)}
-                    label="중소기업 취업자 소득세 감면 적용"
-                    tooltipContent={`조건:
+
+            <SubCard>
+              {/* 고정 공제 전체 카드 */}
+              <ComputedDeductionFix items={고정소득공제} />
+
+              <section className="grid grid-cols-1 gap-6">
+                <Tag title="유동" />
+                {/* 중소기업 취업자 소득세 감면 */}
+                <CheckBox
+                  id="중소기업감면적용"
+                  checked={중소기업감면적용}
+                  onChange={(e) => set중소기업감면적용(e.target.checked)}
+                  amount={중소기업취업자소득감면(총급여)}
+                  label="중소기업 취업자 소득세 감면 적용"
+                  tooltipContent={`조건:
 - 15세~34세 이하 근로자 (군복무 기간 제외)
 - 감면 기간: 5년
 - 감면율: 90%
@@ -408,31 +426,14 @@ export default function HomeScreen() {
 참고 링크:
 - https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=40611&cntntsId=239023
 `}
-                  />
-                  <Tag title="고정" />
-                  {/* 근로 소득 공제 */}
-                  <ComputedDeductionDisplay
-                    title="근로 소득 공제"
-                    공제금액={최종근로소득공제}
-                    공제한도={20000000}
-                    url="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=6592&cntntsId=7871"
-                  />
+                />
 
-                  {/* 연금보험료 공제 */}
-                  <ComputedDeductionDisplay
-                    title="연금보험료 소득 공제"
-                    공제금액={최종연금보험공제}
-                  />
-
-                  <div className="mt-5"></div>
-                  <Tag title="유동" />
-
-                  {/* 카드 소득 공제 */}
-                  <ComputedDeductionForm
-                    title="카드 소득 공제"
-                    공제금액={최종카드공제}
-                    공제한도={3000000}
-                    tooltipContent={`총급여액의 25% 초과 사용분부터 공제가 시작돼요.
+                {/* 카드 소득 공제 */}
+                <ComputedDeductionForm
+                  title="카드 소득 공제"
+                  공제금액={최종카드공제}
+                  공제한도={3000000}
+                  tooltipContent={`총급여액의 25% 초과 사용분부터 공제가 시작돼요.
 - 신용카드: 15%
 - 체크카드/현금영수증: 30%
 - 전통시장/대중교통: 40%
@@ -441,7 +442,8 @@ export default function HomeScreen() {
 ☑️ 제외 항목 (공제 불가)
 보험료, 기부금, 자동차 구입, 리스료, 해외결제, 상품권,
 국세/지방세, 공과금, 월세, 면세물품 구입비용 등`}
-                  >
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InputNumber
                       label="신용카드 사용액"
                       placeholder="연간 신용카드 사용액"
@@ -464,48 +466,49 @@ export default function HomeScreen() {
                         }))
                       }
                     />
-                    <Toggle title="추가 공제">
-                      <InputNumber
-                        label="대중교통 사용액"
-                        placeholder="연간 대중교통 사용액"
-                        value={카드.대중교통}
-                        onChange={(value) =>
-                          set카드((prev) => ({
-                            ...prev,
-                            대중교통: value,
-                          }))
-                        }
-                      />
-                      <InputNumber
-                        label="전통시장 사용액"
-                        placeholder="연간 전통시장 사용액"
-                        value={카드.전통시장}
-                        onChange={(value) =>
-                          set카드((prev) => ({
-                            ...prev,
-                            전통시장: value,
-                          }))
-                        }
-                      />
-                      <InputNumber
-                        label="도서·공연·박물관·미술관"
-                        placeholder="연간 문화생활 사용액"
-                        value={카드.문화생활}
-                        onChange={(value) =>
-                          set카드((prev) => ({
-                            ...prev,
-                            문화생활: value,
-                          }))
-                        }
-                      />
-                    </Toggle>
-                  </ComputedDeductionForm>
+                  </div>
+                  <Toggle title="추가 공제">
+                    <InputNumber
+                      label="대중교통 사용액"
+                      placeholder="연간 대중교통 사용액"
+                      value={카드.대중교통}
+                      onChange={(value) =>
+                        set카드((prev) => ({
+                          ...prev,
+                          대중교통: value,
+                        }))
+                      }
+                    />
+                    <InputNumber
+                      label="전통시장 사용액"
+                      placeholder="연간 전통시장 사용액"
+                      value={카드.전통시장}
+                      onChange={(value) =>
+                        set카드((prev) => ({
+                          ...prev,
+                          전통시장: value,
+                        }))
+                      }
+                    />
+                    <InputNumber
+                      label="도서·공연·박물관·미술관"
+                      placeholder="연간 문화생활 사용액"
+                      value={카드.문화생활}
+                      onChange={(value) =>
+                        set카드((prev) => ({
+                          ...prev,
+                          문화생활: value,
+                        }))
+                      }
+                    />
+                  </Toggle>
+                </ComputedDeductionForm>
 
-                  {/* 인적 소득 공제 */}
-                  <ComputedDeductionForm
-                    title="인적 소득 공제"
-                    공제금액={최종인적공제}
-                    tooltipContent={`부양가족은 소득이 없는 사람을 뜻합니다.
+                {/* 인적 소득 공제 */}
+                <ComputedDeductionForm
+                  title="인적 소득 공제"
+                  공제금액={최종인적공제}
+                  tooltipContent={`부양가족은 소득이 없는 사람을 뜻합니다.
                       년 소득이 100만원 미만이거나 근로소득만 있을 경우 500만원 미만입니다.
                       
                       [나이 조건]
@@ -513,67 +516,54 @@ export default function HomeScreen() {
                       - 60세 이상 부모
                       - 20세 이하 자녀
                       - 20세 이하 60세 이상 형제 자매`}
-                  >
-                    <InputNumber
-                      label="부양가족 수(본인 포함)"
-                      placeholder="본인을 포함한 부양가족 수를 작성합니다."
-                      value={부양가족수}
-                      onChange={(v) =>
-                        set부양가족수(v !== undefined ? clamp(v, 1, 20) : 0)
-                      }
-                    />
-                  </ComputedDeductionForm>
+                >
+                  <InputNumber
+                    label="부양가족 수(본인 포함)"
+                    placeholder="본인을 포함한 부양가족 수를 작성합니다."
+                    value={부양가족수}
+                    onChange={(v) =>
+                      set부양가족수(v !== undefined ? clamp(v, 1, 20) : 0)
+                    }
+                  />
+                </ComputedDeductionForm>
 
-                  {/* 주택 청약 소득 공제 */}
-                  {총급여 < 70_000_000 && (
-                    <ComputedDeductionForm
-                      title="주택 청약 소득 공제"
-                      공제금액={최종주택청약공제}
-                      공제한도={3000000}
-                      tooltipContent={`2015년 1월 1일 이후 납입한 경우 총급여액 7천만원 이하의 근로소득이 있어야해요.
+                {/* 주택 청약 소득 공제 */}
+                {총급여 < 70_000_000 && (
+                  <ComputedDeductionForm
+                    title="주택 청약 소득 공제"
+                    공제금액={최종주택청약공제}
+                    공제한도={3000000}
+                    tooltipContent={`2015년 1월 1일 이후 납입한 경우 총급여액 7천만원 이하의 근로소득이 있어야해요.
                       💡무주택 세대주 요건이 필요해요!
                     `}
-                      url="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=40610&cntntsId=239022"
-                    >
-                      <InputNumber
-                        label="주택 청약(연)"
-                        placeholder="1년동안 납부한 주택청약 비용을 작성합니다."
-                        value={주택청약}
-                        onChange={set주택청약}
-                      />
-                    </ComputedDeductionForm>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-3 grid grid-cols-1 gap-3"></div>
-            </div>
+                    url="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?mi=40610&cntntsId=239022"
+                  >
+                    <InputNumber
+                      label="주택 청약(연)"
+                      placeholder="1년동안 납부한 주택청약 비용을 작성합니다."
+                      value={주택청약}
+                      onChange={set주택청약}
+                    />
+                  </ComputedDeductionForm>
+                )}
+              </section>
+            </SubCard>
           </Card>
 
           {/* 세액공제 : 총 공제 금액 합계 계산*/}
           <Card>
-            <Category
+            <ComputedDeductionResult
               title="세액 공제"
               tooltipContent="내야할 세금을 깍아주는 것을 말해요."
-            />
-            <Result
-              amount={formatKoreanCurrency(최종세액공제)}
+              amount={최종세액공제}
               message="세액공제를 받을 것으로 예상돼요🥳"
             />
-            <TaxDeductionProgress
-              최대공제한도={25000000}
-              공제금액={최종세액공제}
-            />
 
-            <div className="grid grid-cols-1 gap-4 mt-6">
+            <SubCard>
               {/* 고정 공제 전체 카드 */}
-              <div className="flex flex-col gap-4 p-6 border rounded-lg bg-gray-50">
-                <Tag title="고정" />
-                <ComputedDeductionDisplay
-                  title="근로소득 세액공제"
-                  공제금액={최종근로소득세액공제}
-                />
+              <ComputedDeductionFix items={고정세액공제} />
 
+              <section className="grid grid-cols-1 gap-6">
                 <Tag title="유동" />
                 {/* 결혼 세액공제 */}
                 <CheckBox
@@ -591,6 +581,8 @@ export default function HomeScreen() {
 - 혼인관계증명서
 - 주민등록등본 `}
                 />
+
+                {/* 연금저축 */}
                 <ComputedDeductionForm
                   title="연금저축 세액공제"
                   공제금액={최종연금저축세액공제}
@@ -612,6 +604,7 @@ export default function HomeScreen() {
                   </div>
                 </ComputedDeductionForm>
 
+                {/* 보험 */}
                 <ComputedDeductionForm
                   title="보장성 보험 세액공제"
                   공제금액={최종보장성보험세액공제}
@@ -647,6 +640,7 @@ export default function HomeScreen() {
                   </div>
                 </ComputedDeductionForm>
 
+                {/* 의료비 */}
                 <ComputedDeductionForm
                   title="의료비 세액공제"
                   공제금액={최종의료비세액공제}
@@ -722,6 +716,7 @@ export default function HomeScreen() {
                   </Toggle>
                 </ComputedDeductionForm>
 
+                {/* 교육비 */}
                 <ComputedDeductionForm
                   title="교육비 세액공제"
                   공제금액={최종교육비세액공제}
@@ -777,7 +772,8 @@ export default function HomeScreen() {
                     />
                   </Toggle>
                 </ComputedDeductionForm>
-                {/* 월세 세액공제 */}
+
+                {/* 월세 */}
                 <ComputedDeductionForm
                   title="월세 세액공제"
                   공제금액={최종월세액공제}
@@ -805,6 +801,8 @@ export default function HomeScreen() {
                     onChange={(value) => set연간월세(value)}
                   />
                 </ComputedDeductionForm>
+
+                {/* 기부금 */}
                 <ComputedDeductionForm
                   title="지정기부금 (아름다운가게 등)"
                   공제금액={지정기부금세액공제(기부금.지정 || 0)}
@@ -825,8 +823,6 @@ export default function HomeScreen() {
                     }
                   />
                 </ComputedDeductionForm>
-
-                {/* 고향사랑기부금 */}
                 <ComputedDeductionForm
                   title="고향사랑기부금"
                   공제금액={고향사랑기부금세액공제(기부금.고향사랑 || 0)}
@@ -906,8 +902,8 @@ export default function HomeScreen() {
                     onChange={(v) => set자녀(v)}
                   />
                 </ComputedDeductionForm>
-              </div>
-            </div>
+              </section>
+            </SubCard>
           </Card>
         </section>
 
@@ -915,13 +911,13 @@ export default function HomeScreen() {
         <section>
           <Card>
             <Category title="참고 및 면책" />
-            <ul className="text-sm space-y-2 text-gray-600">
+            <ul className="mt-3 text-sm space-y-2 text-gray-600">
               <li>
-                본 도구는 <b>참고용</b>입니다. 실제 연말정산은 국세청 고지 및
+                - 본 도구는 <b>참고용</b>입니다. 실제 연말정산은 국세청 고지 및
                 회사 원천징수 내역을 따릅니다.
               </li>
               <li>
-                세법은 매년 변경될 수 있습니다. 정확한 기준은 국세청 자료를
+                - 세법은 매년 변경될 수 있습니다. 정확한 기준은 국세청 자료를
                 확인하세요.
               </li>
             </ul>
