@@ -11,7 +11,7 @@ export default function CheckBox({
   onChange,
 }: ICheckBoxProps) {
   return (
-    <div className="flex justify-between items-center">
+    <div className="md:flex md:justify-between md:items-center">
       <div className="flex items-center gap-2">
         <input type="checkbox" id={id} checked={checked} onChange={onChange} />
         <label htmlFor={id}>
@@ -20,9 +20,9 @@ export default function CheckBox({
       </div>
 
       {checked && (
-        <span className="font-bold text-blue-600">
+        <p className="font-bold text-blue-600 text-right">
           {formatKoreanCurrency(amount)}원
-        </span>
+        </p>
       )}
     </div>
   );

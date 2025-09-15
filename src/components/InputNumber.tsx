@@ -34,7 +34,7 @@ export default function InputNumber({
   };
 
   return (
-    <label className="grid gap-1 text-sm mb-2">
+    <label className="grid gap-1 md:text-sm text-xs">
       <span className="font-medium">{label}</span>
       <input
         type="text"
