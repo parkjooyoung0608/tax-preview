@@ -11,6 +11,10 @@ export default function IndexPage() {
       <Head>
         <title>연말정산 미리보기</title>
         <meta
+          name="google-site-verification"
+          content="yEVfjlqgMFD9bMMM338Y3V8Xz-Z2pCNG9tieF4V4JSw"
+        />
+        <meta
           name="description"
           content="연봉과 공제 항목을 입력하면 예상 세금을 계산하고 연말정산 환급 또는 추가 납부 금액을 미리 확인할 수 있습니다."
         />
