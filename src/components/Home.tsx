@@ -14,6 +14,7 @@ import Category from "@components/text/Category";
 import Result from "@components/text/Result";
 import Tag from "@components/Tag";
 import ComputedDeductionDisplay from "@components/computedDeduction/Display";
+import AdFitBannerWrapper from "@components/AdFit/BannerWrapper";
 
 // utils
 import 기납부세액 from "@utils/기납부세액";
@@ -275,33 +276,10 @@ export default function HomeScreen() {
     }
   };
 
-  // TODO: SEO를 위해 정적 메타 태그/OG 태그를 페이지별 설정하시고(Next.js권장), 광고는 카카오 애드핏 정책에 맞게 삽입하세요.
-  // TODO: 카카오 애드핏(샘플) — 실제 운용 시 본인 광고단위로 교체 필요
-  useEffect(() => {
-    // 주석 처리: 샌드박스 환경에서는 외부 스크립트 로드를 하지 않습니다.
-    // const s = document.createElement('script');
-    // s.async = true;
-    // s.src = 'https://t1.daumcdn.net/kas/static/ba.min.js';
-    // s.onload = () => {
-    //   try {
-    //     // @ts-ignore
-    //     window.Kakao?.AdFit?.renderAd && window.Kakao.AdFit.renderAd();
-    //   } catch {}
-    // };
-    // document.body.appendChild(s);
-    // return () => { document.body.removeChild(s); };
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       <Header onClickReset={resetSalaryDetail} />
 
-      {/* 광고 배너(샘플) */}
-      <div className="max-w-5xl mx-auto px-4 mt-4">
-        <div className="w-full h-20 rounded-2xl border border-dashed border-gray-300 flex items-center justify-center text-sm text-gray-500">
-          카카오 애드핏 영역 (실 서비스에서 광고 단위 코드로 교체)
-        </div>
-      </div>
       <main className="max-w-5xl mx-auto px-4 py-6 grid gap-6">
         {/* 결과 섹션 */}
         {Number(String(최종기납부세액).replace(/,/g, "")) > 0 && (
@@ -952,6 +930,9 @@ export default function HomeScreen() {
       </main>
 
       <Footer />
+
+      {/* 광고 배너 */}
+      <AdFitBannerWrapper />
     </div>
   );
 }
