@@ -37,7 +37,7 @@ export default function InfoTooltip({
 
       {open && (
         <div
-          className={`absolute z-10 mt-2 bg-black text-white text-xs rounded-lg shadow-lg px-3 py-2 whitespace-pre-line break-words w-[200px] mb:w-[400px]
+          className={`absolute z-10 mt-2 bg-black text-white text-xs rounded-lg shadow-lg px-3 py-2 whitespace-pre-line break-words w-[200px] md:w-[400px]
             ${position === "left" ? "left-0" : "right-0"}`}
         >
           {content}

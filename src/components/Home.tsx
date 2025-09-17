@@ -5,13 +5,13 @@ export default function Home() {
   return (
     <main className="flex items-center justify-center w-full h-screen bg-neutral-900 text-center text-white">
       <div>
-        <h1 className="mb:text-3xl text-2xl font-bold mb:mb-4 mb-2">
+        <h1 className="md:text-3xl text-2xl font-bold md:mb-4 mb-2">
           연말정산 미리보기
         </h1>
-        <p className="mb-6 text-gray-300 mb:text-lg text-sm">
+        <p className="mb-6 text-gray-300 md:text-lg text-sm">
           복잡한 연말정산을 간단한 입력만으로 쉽게 확인하세요
         </p>
-        <div className="relative flex items-center mb:w-[240px] mb:h-[240px] w-[200px] h-[200px] mx-auto mb-6">
+        <div className="relative flex items-center md:w-[240px] md:h-[240px] w-[200px] h-[200px] mx-auto mb-6">
           <Image
             src="/images/moneybag.png"
             alt="돈주머니"

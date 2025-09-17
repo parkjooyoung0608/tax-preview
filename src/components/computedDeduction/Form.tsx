@@ -12,7 +12,7 @@ export default function ComputedDeductionForm({
   children,
 }: IComputedDeductionForm) {
   return (
-    <div className="mb:mb-3 mb-6">
+    <div className="md:mb-3 mb-6">
       <div className="mb-2">
         <Title
           title={title}
