@@ -11,6 +11,15 @@ module.exports = {
         "brand-red": "#E64242",
         "brand-blue": "#4F7FD1",
       },
+      keyframes: {
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-15px)" },
+        },
+      },
+      animation: {
+        float: "float 3s ease-in-out infinite",
+      },
     },
   },
   plugins: [],
